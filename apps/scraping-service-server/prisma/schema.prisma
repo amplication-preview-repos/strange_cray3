@@ -1,0 +1,38 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Keyword {
+  createdAt        DateTime      @default(now())
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  keyword          String?
+  scrapedDataItems ScrapedData[]
+  updatedAt        DateTime      @updatedAt
+}
+
+model ScrapedData {
+  content   String?
+  createdAt DateTime @default(now())
+  email     String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  keyword   Keyword? @relation(fields: [keywordId], references: [id])
+  keywordId String?  @db.ObjectId
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
